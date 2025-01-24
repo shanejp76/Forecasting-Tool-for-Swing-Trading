@@ -86,7 +86,7 @@ if selected_stock in tickers:
     data = load_data(selected_stock)
     data_load_state.text(f"-- {ticker_name} Data Loaded. --")
 else:
-    data_load_state.text(f"-- {selected_stock} not a valid Symbol. Please enter a symbol from the Ticker List in the Appendix below. --")
+    data_load_state.text(f"-- '{selected_stock}' is not a valid Symbol. Please enter a symbol from the Ticker List in the Appendix below. --")
 
 # Change Data to datetime64[ns] datatype
 data.Date = pd.to_datetime(data.Date)
@@ -293,7 +293,12 @@ def model_drafts(df_train, scores_df=scores_df):
         scores_df = pd.concat([scores_df, df_p[['mse', 'rmse', 'mae', 'mape']]], ignore_index=True)
     return scores_df
 
-scores_df = model_drafts(df_train)
+data_load_state = st.text("-- Training Baseline & Winsorized Model... --")
+if len(df_train) > 0:
+    scores_df = model_drafts(df_train)
+    data_load_state.text("-- Baseline & Winsorized Model Trained. --")
+else:
+    data_load_state.text("-- Error in training models. --")
 
 # Train final model on best performing model draft
 if scores_df.iloc[0]['rmse'] < scores_df.iloc[1]['rmse']:
@@ -347,7 +352,12 @@ def tune_and_train_final_model(df_train, all_params, forecast_period, scores_df=
     
     return m, scores_df, forecast, best_params_dict
 
-m, scores_df, forecast, best_params_dict = tune_and_train_final_model(df_train, all_params, forecast_period)
+data_load_state = st.text("-- Training Final Model... --")
+if len(df_train) > 0:
+    m, scores_df, forecast, best_params_dict = tune_and_train_final_model(df_train, all_params, forecast_period)
+    data_load_state.text("-- Final Model Trained. --")
+else:
+    data_load_state.text("-- Error in training final model. --")
 
 # Merge entire forecast w actual data & indicators
 # ------------------------------------------------------------------
