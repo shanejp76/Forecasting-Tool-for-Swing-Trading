@@ -17,7 +17,7 @@ import itertools
 # Main Title
 st.title('Forecasting Tool for Swing Trading')
 st.subheader('by Shane Peterson')
-with st.expander('Welcome! Click here to expand'):
+with st.expander('-- Welcome! Click here to expand --'):
     st.write("""
     Welcome to the Forecasting Tool for Swing Trading! This application is designed to help you make smarter trading decisions!
 
@@ -321,22 +321,6 @@ forecast_candlestick_df.rename(columns={'ds': 'Date'}, inplace=True) # keep nami
 scores_df.index = ['Baseline Model', 'Winsorized Model', 'Final Model']
 scores_df = scores_df.reindex(sorted(scores_df.columns), axis=1)
 
-st.write('-- Accuracy Metrics --')
-st.write('Forecasting Model Accuracy:')
-st.subheader(f'{100-(round(scores_df['mape'].iloc[2]*100, 2))}%')
-st.write('')
-st.dataframe(scores_df.loc[['Final Model']], width=500)
-
-# Graph notes
-# ------------------------------------------------------------------
-st.write('-- Tips for Accuracy Metrics --')
-with st.expander('Click here to expand'):
-    st.write("In the context of time series forecasting, 'error' refers to the difference between the actual value of a variable at a specific point in time and the value predicted by a forecasting model. In this case, the metrics will specifically measure the error between the stock's closing price and the forecast trained on the closing price.")
-    st.write(f"* Mean Absolute Error (MAE) - a MAE of {round(scores_df['mae'].iloc[2], 4)} implies that, on average, the model's predictions are off by approximately ${round(scores_df['mae'].iloc[2], 2)}.")
-    st.write(f"* Mean Absolute Percentage Error (MAPE) - a MAPE of {round(scores_df['mape'].iloc[2], 4)} means that, on average, the model's predictions are {round(scores_df['mape'].iloc[2] * 100, 2)}% off from the actual values.")
-    st.write('* Mean Squared Error (MSE) - this squares the errors, giving more weight to larger errors. A lower MSE indicates better accuracy.')
-    st.write(f"* Root Mean Squared Error (RMSE) -  The square root of MSE. It is in the same units as the original data, making it easier to interpret. The RMSE of {round(scores_df['rmse'].iloc[2], 4)} suggests that the model's predictions can deviate from the actual values by up to ${round(scores_df['rmse'].iloc[2], 2)} in some cases.")
-
 # Function & Indicators for Forecasted Candlestick Graph
 # ------------------------------------------------------------------
 @st.cache_resource
@@ -399,10 +383,27 @@ def plot_forecast(data):
 
 plot_forecast(forecast_candlestick_df)
 
+st.write('-- Accuracy Metrics --')
+st.write('Forecasting Model Accuracy:')
+st.subheader(f'{100-(round(scores_df['mape'].iloc[2]*100, 2))}%')
+st.write('')
+st.dataframe(scores_df.loc[['Final Model']], width=500)
+
+# Graph notes
 # ------------------------------------------------------------------
-### APPENDIX
+st.write('-- Tips for Accuracy Metrics --')
+with st.expander('Click here to expand'):
+    st.write("In the context of time series forecasting, 'error' refers to the difference between the actual value of a variable at a specific point in time and the value predicted by a forecasting model. In this case, the metrics will specifically measure the error between the stock's closing price and the forecast trained on the closing price.")
+    st.write(f"* Mean Absolute Error (MAE) - a MAE of {round(scores_df['mae'].iloc[2], 4)} implies that, on average, the model's predictions are off by approximately ${round(scores_df['mae'].iloc[2], 2)}.")
+    st.write(f"* Mean Absolute Percentage Error (MAPE) - a MAPE of {round(scores_df['mape'].iloc[2], 4)} means that, on average, the model's predictions are {round(scores_df['mape'].iloc[2] * 100, 2)}% off from the actual values.")
+    st.write('* Mean Squared Error (MSE) - this squares the errors, giving more weight to larger errors. A lower MSE indicates better accuracy.')
+    st.write(f"* Root Mean Squared Error (RMSE) -  The square root of MSE. It is in the same units as the original data, making it easier to interpret. The RMSE of {round(scores_df['rmse'].iloc[2], 4)} suggests that the model's predictions can deviate from the actual values by up to ${round(scores_df['rmse'].iloc[2], 2)} in some cases.")
+
 # ------------------------------------------------------------------
-about_str = """
+### ABOUT
+# ------------------------------------------------------------------
+
+about_str = f"""
 -- The App --
 
 As a passionate swing trader, I developed this application to streamline my decision-making process. It leverages fundamental data science concepts, including data engineering and analytics, to provide actionable insights. 
@@ -414,12 +415,12 @@ The app features a user-friendly interface with a candlestick chart, Bollinger B
 To enhance my swing trading strategy, I've integrated a Prophet forecasting model, fine-tuned with techniques like winsorization and hyperparameter tuning to optimize its accuracy. 
 
 **Key Model Enhancements:**
-    * **Adaptive Winsorization:** The winsorization thresholds are dynamically adjusted based on the stock's volatility. 
-    * **Adaptive Training Data:** The training data size is dynamically adjusted based on the stock's volatility and available data.
+* Adaptive Winsorization: The winsorization thresholds are dynamically adjusted based on the stock's volatility. 
+* Adaptive Training Data: The training data size is dynamically adjusted based on the stock's volatility and available data.
 
 By combining these refinements with a cross-validated grid search to optimize changepoint_prior_scale and seasonality_prior_scale (e.g., for '{selected_stock}', optimal values are: changepoint_prior_scale: {best_params_dict["changepoint_prior_scale"]:.3f}, seasonality_prior_scale: {best_params_dict["seasonality_prior_scale"]:.3f}), this application provides me with a robust forecasting tool.
 
-Cross-validation ensures that the hyperparameters selected are not overfitted to a specific subset of the data. By evaluating the model's performance on multiple subsets of the data during the grid search, we can select hyperparameters that generalize better to unseen data and potentially improve the model's out-of-sample performance.
+Cross-validation ensures that the hyperparameters selected are not overfitted to a specific subset of the data. By evaluating the model's performance on multiple subsets of the data during the grid search, we can select hyperparameters that generalize better to unseen data and potentially improve the model's out-of-sample performance. Check out Model Iterations in the Appendix to observe the model's improvement over its learning cycles.
 
 -- Swing Trading --
 
@@ -431,17 +432,14 @@ By selecting a stock ticker, the app displays key performance indicators (KPIs) 
 st.subheader('-- About --')
 st.write(about_str)
 
+# ------------------------------------------------------------------
+### APPENDIX
+# ------------------------------------------------------------------
+
 st.subheader('-- Appendix --') # button to hide / unhide
 with st.expander('Click here to expand'):
     st.subheader('-- Ticker List --') # button to hide / unhide
     st.write(pd.DataFrame(tickers_data))
-    st.subheader('-- Raw Data --') # button to hide / unhide
-    st.write(data)
-    st.subheader('-- Forecast Grid --')
-    st.write(forecast)
-    st.subheader('-- Forecast Components --')
-    fig2 = m.plot_components(forecast)
-    st.write(fig2)
     st.subheader('-- Model Iterations --')
     st.write('-- Baseline Model --')
     st.dataframe(scores_df.loc[['Baseline Model']], width=500)
@@ -449,3 +447,10 @@ with st.expander('Click here to expand'):
     st.dataframe(scores_df.loc[['Winsorized Model']], width=500)
     st.write('-- Final Model --')
     st.dataframe(scores_df.loc[['Final Model']], width=500)
+    st.subheader('-- Forecast Components --')
+    fig2 = m.plot_components(forecast)
+    st.write(fig2)
+    st.subheader('-- Forecast Grid --')
+    st.write(forecast)
+    st.subheader('-- Raw Data --') # button to hide / unhide
+    st.write(data)
