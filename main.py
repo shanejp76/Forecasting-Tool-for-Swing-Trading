@@ -17,15 +17,16 @@ import itertools
 # Main Title
 st.title('Forecasting Tool for Swing Trading')
 st.subheader('by Shane Peterson')
-st.write("""
-Welcome to the Forecasting Tool for Swing Trading! This application is designed to help you make smarter trading decisions!
+with st.expander('Welcome! Click here to expand'):
+    st.write("""
+    Welcome to the Forecasting Tool for Swing Trading! This application is designed to help you make smarter trading decisions!
 
-It uses a fancy AI model (called Prophet) to predict short-term price swings in stocks. I've tweaked the model to be super accurate, especially for those wild swings.
+    It uses a fancy AI model (called Prophet) to predict short-term price swings in stocks. I've tweaked the model to be super accurate, especially for those wild swings.
 
-The app also gives me helpful charts and indicators (like Bollinger Bands) to spot good entry and exit points. Basically, it gives me an edge in the stock market!
+    The app also gives me helpful charts and indicators (like Bollinger Bands) to spot good entry and exit points. Basically, it gives me an edge in the stock market!
 
-For more technical information, check out the Appendix below. Happy trading!
-""")
+    For more technical information, check out the Appendix below. Happy trading!
+    """)
 
 ### Ticker Selection Searchbar
 st.subheader('-- Choose a Stock --')
@@ -263,7 +264,11 @@ def model_drafts(df_train, scores_df=scores_df):
 
 scores_df = model_drafts(df_train)
 
-df_train = df_train.rename(columns={'winsorized': 'y'})
+# Train final model on best performing model draft
+if scores_df.iloc[0]['rmse'] < scores_df.iloc[1]['rmse']:
+    df_train = df_train.rename(columns={'Close': 'y'})
+else:
+    df_train = df_train.rename(columns={'winsorized': 'y'})
 
 # Prepare for grid search of combos of all pararmeters
 # ------------------------------------------------------------------
@@ -397,46 +402,34 @@ plot_forecast(forecast_candlestick_df)
 # ------------------------------------------------------------------
 ### APPENDIX
 # ------------------------------------------------------------------
-about_the_app = """
+about_str = """
 -- The App --
 
-As a passionate swing trader, I developed this application to streamline my decision-making process. It leverages fundamental data science concepts, including data engineering and analytics, to provide actionable insights.
+As a passionate swing trader, I developed this application to streamline my decision-making process. It leverages fundamental data science concepts, including data engineering and analytics, to provide actionable insights. 
 
-The app features a user-friendly interface with a candlestick chart, Bollinger Bands, and a Simple Moving Average (SMA) for visual analysis of price trends. I've also integrated a proprietary forecasting tool that analyzes historical patterns to generate mathematically driven predictions.
+The app features a user-friendly interface with a candlestick chart, Bollinger Bands, and a Simple Moving Average (SMA) for visual analysis of price trends. 
 
-By selecting a stock ticker, the app displays key performance indicators (KPIs) like historical highs/lows, percentage change, volatility, and current price alongside the chart. This comprehensive tool empowers me to make more informed trading decisions and refine my trading strategies.
-
-"""
-
-about_the_model = f"""
 -- The Model --
 
-This application was designed to enhance my swing trading strategy. It utilizes a Prophet forecasting model, fine-tuned with techniques like winsorization and hyperparameter tuning to optimize its accuracy.
+To enhance my swing trading strategy, I've integrated a Prophet forecasting model, fine-tuned with techniques like winsorization and hyperparameter tuning to optimize its accuracy. 
 
-Key Model Enhancements:
+**Key Model Enhancements:**
+    * **Adaptive Winsorization:** The winsorization thresholds are dynamically adjusted based on the stock's volatility. 
+    * **Adaptive Training Data:** The training data size is dynamically adjusted based on the stock's volatility and available data.
 
-* Adaptive Winsorization: The winsorization thresholds are dynamically adjusted based on the stock's volatility. Tighter thresholds are applied to less volatile stocks, while looser thresholds are used for more volatile stocks to better capture their price movements.
-* Adaptive Training Data: The training data size is dynamically adjusted based on the stock's volatility and available data. For more volatile stocks, the model leverages a larger training window (when possible) to capture historical patterns more effectively.
-
-By combining these refinements with a cross-validated grid search to optimize changepoint_prior_scale and seasonality_prior_scale (e.g., for '{selected_stock}', optimal values are: changepoint_prior_scale: {best_params_dict["changepoint_prior_scale"]:.3f}, seasonality_prior_scale: {best_params_dict["seasonality_prior_scale"]:.3f}), this application provides me with a robust forecasting tool that can be used in conjunction with visual aids like candlestick charts, Bollinger Bands, and SMAs to identify potential entry and exit points for swing trades.
+By combining these refinements with a cross-validated grid search to optimize changepoint_prior_scale and seasonality_prior_scale (e.g., for '{selected_stock}', optimal values are: changepoint_prior_scale: {best_params_dict["changepoint_prior_scale"]:.3f}, seasonality_prior_scale: {best_params_dict["seasonality_prior_scale"]:.3f}), this application provides me with a robust forecasting tool.
 
 Cross-validation ensures that the hyperparameters selected are not overfitted to a specific subset of the data. By evaluating the model's performance on multiple subsets of the data during the grid search, we can select hyperparameters that generalize better to unseen data and potentially improve the model's out-of-sample performance.
-"""
-about_swing_trading = """
+
 -- Swing Trading --
 
-This application was designed to enhance my swing trading strategy. Swing trading focuses on capturing short-term price movements, and this tool provides me with valuable insights.
+Swing trading focuses on capturing short-term price movements. By combining the forecasting model with visual aids like candlestick charts, Bollinger Bands, and SMAs, I'm able to identify potential entry and exit points with greater confidence, ultimately refining my trading decisions.
 
-I've integrated a Prophet forecasting model, fine-tuned with techniques like winsorization and hyperparameter tuning to optimize its accuracy. The model dynamically adjusts its training data based on the stock's volatility, aiming to improve prediction accuracy.
-
-By combining these analytical tools with visual aids like candlestick charts, Bollinger Bands, and SMAs, I'm able to identify potential entry and exit points with greater confidence, ultimately refining my trading decisions.
-
+By selecting a stock ticker, the app displays key performance indicators (KPIs) like historical highs/lows, percentage change, volatility, and current price alongside the chart. This comprehensive tool empowers me to make more informed trading decisions and refine my trading strategies.
 """
 
 st.subheader('-- About --')
-st.write(about_the_app)
-st.write(about_the_model)
-st.write(about_swing_trading)
+st.write(about_str)
 
 st.subheader('-- Appendix --') # button to hide / unhide
 with st.expander('Click here to expand'):
