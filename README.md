@@ -1,4 +1,4 @@
-# Swing Ticker
+# Forecasting Tool for Swing Trading
 
 This application is designed to enhance swing trading strategies by providing valuable insights through various analytical tools and visual aids.
 
