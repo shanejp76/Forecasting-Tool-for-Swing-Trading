@@ -17,10 +17,19 @@ import itertools
 # Main Title
 st.title('Forecasting Tool for Swing Trading')
 st.subheader('by Shane Peterson')
+st.write("""
+Welcome to the Forecasting Tool for Swing Trading! This application is designed to help you make smarter trading decisions!
+
+It uses a fancy AI model (called Prophet) to predict short-term price swings in stocks. I've tweaked the model to be super accurate, especially for those wild swings.
+
+The app also gives me helpful charts and indicators (like Bollinger Bands) to spot good entry and exit points. Basically, it gives me an edge in the stock market!
+
+For more technical information, check out the Appendix below. Happy trading!
+""")
 
 ### Ticker Selection Searchbar
 st.subheader('-- Choose a Stock --')
-selected_stock = st.text_input("Enter Symbol", value="goog").upper()
+selected_stock = st.text_input("Enter Symbol (Ticker List in Appendix)", value="goog").upper()
 
 # Get Ticker Metadata
 # ------------------------------------------------------------------
@@ -67,7 +76,7 @@ if selected_stock in tickers:
     data = load_data(selected_stock)
     data_load_state.text(f"-- {ticker_name} Data Loaded. --")
 else:
-    data_load_state.text(f"-- {selected_stock} not a valid Symbol. Please enter a symbol from the picker in the Appendix below. --")
+    data_load_state.text(f"-- {selected_stock} not a valid Symbol. Please enter a symbol from the Ticker List in the Appendix below. --")
 
 # Change Data to datetime64[ns] datatype
 data.Date = pd.to_datetime(data.Date)
@@ -308,7 +317,7 @@ scores_df.index = ['Baseline Model', 'Winsorized Model', 'Final Model']
 scores_df = scores_df.reindex(sorted(scores_df.columns), axis=1)
 
 st.write('-- Accuracy Metrics --')
-st.write('Overall Accuracy:')
+st.write('Forecasting Model Accuracy:')
 st.subheader(f'{100-(round(scores_df['mape'].iloc[2]*100, 2))}%')
 st.write('')
 st.dataframe(scores_df.loc[['Final Model']], width=500)
@@ -373,7 +382,7 @@ def plot_forecast(data):
                 name='Candlestick'))
     # Labels
     fig.layout.update(
-        title_text=f"Time Series Data: {ticker_name} '{selected_stock}'",
+        title_text=f"Forecast for Time Series Data: {ticker_name} '{selected_stock}'",
                 xaxis_rangeslider_visible=True,
                 yaxis_title='Price',
                 xaxis_title='Date')
@@ -424,6 +433,11 @@ By combining these analytical tools with visual aids like candlestick charts, Bo
 
 """
 
+st.subheader('-- About --')
+st.write(about_the_app)
+st.write(about_the_model)
+st.write(about_swing_trading)
+
 st.subheader('-- Appendix --') # button to hide / unhide
 with st.expander('Click here to expand'):
     st.subheader('-- Ticker List --') # button to hide / unhide
@@ -442,7 +456,3 @@ with st.expander('Click here to expand'):
     st.dataframe(scores_df.loc[['Winsorized Model']], width=500)
     st.write('-- Final Model --')
     st.dataframe(scores_df.loc[['Final Model']], width=500)
-    st.subheader('-- About --')
-    st.write(about_the_app)
-    st.write(about_the_model)
-    st.write(about_swing_trading)
