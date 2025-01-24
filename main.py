@@ -383,7 +383,7 @@ def plot_forecast(data):
 
 plot_forecast(forecast_candlestick_df)
 
-st.write('-- Accuracy Metrics --')
+st.write('**-- Accuracy Metrics --**')
 st.write('Forecasting Model Accuracy:')
 st.subheader(f'{100-(round(scores_df['mape'].iloc[2]*100, 2))}%')
 st.write('')
@@ -404,17 +404,17 @@ with st.expander('Click here to expand'):
 # ------------------------------------------------------------------
 
 about_str = f"""
--- The App --
+**-- The App --**
 
 As a passionate swing trader, I developed this application to streamline my decision-making process. It leverages fundamental data science concepts, including data engineering and analytics, to provide actionable insights. 
 
 The app features a user-friendly interface with a candlestick chart, Bollinger Bands, and a Simple Moving Average (SMA) for visual analysis of price trends. 
 
--- The Model --
+**-- The Model --**
 
 To enhance my swing trading strategy, I've integrated a Prophet forecasting model, fine-tuned with techniques like winsorization and hyperparameter tuning to optimize its accuracy. 
 
-**Key Model Enhancements:**
+Key Model Enhancements:
 * Adaptive Winsorization: The winsorization thresholds are dynamically adjusted based on the stock's volatility. 
 * Adaptive Training Data: The training data size is dynamically adjusted based on the stock's volatility and available data.
 
@@ -422,7 +422,7 @@ By combining these refinements with a cross-validated grid search to optimize ch
 
 Cross-validation ensures that the hyperparameters selected are not overfitted to a specific subset of the data. By evaluating the model's performance on multiple subsets of the data during the grid search, we can select hyperparameters that generalize better to unseen data and potentially improve the model's out-of-sample performance. Check out Model Iterations in the Appendix to observe the model's improvement over its learning cycles.
 
--- Swing Trading --
+**-- Swing Trading --**
 
 Swing trading focuses on capturing short-term price movements. By combining the forecasting model with visual aids like candlestick charts, Bollinger Bands, and SMAs, I'm able to identify potential entry and exit points with greater confidence, ultimately refining my trading decisions.
 
