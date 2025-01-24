@@ -62,6 +62,15 @@ for item in tickers_data:
 # Get ticker raw data
 @st.cache_data # caches data from different tickers
 def load_data(ticker):
+    """
+    Downloads historical market data for a given ticker symbol.
+
+    Parameters:
+    ticker (str): The ticker symbol of the stock to download data for.
+
+    Returns:
+    pd.DataFrame: A DataFrame containing the historical market data for the specified ticker.
+    """
     data = yf.download(ticker, period='max') # returns relevant data in df
     data.reset_index(inplace=True) # reset multindex, output is index list of tuples
     cols = list(data.columns) # convert index to list
@@ -151,6 +160,18 @@ data['bb_lower'] = indicator_bb.bollinger_lband()
 # ------------------------------------------------------------------
 @st.cache_resource
 def plot_raw_data(data):
+    """
+    Generates a Plotly figure for the raw candlestick data along with SMA and Bollinger Bands.
+
+    Parameters:
+    data (pd.DataFrame): DataFrame containing the raw market data and indicators.
+    ticker_name (str): The name of the ticker symbol.
+    selected_stock (str): The name of the selected stock.
+    stock_age (str): The age category of the stock ('seasoned' or other).
+
+    Returns:
+    None: The function displays the Plotly figure in the Streamlit app.
+    """
     fig = go.Figure()
     # Add candlestick trace
     fig.add_trace(go.Candlestick(x=data['Date'],
@@ -253,6 +274,16 @@ scores_df = pd.DataFrame(columns=['mse', 'rmse', 'mae', 'mape'])
 
 @st.cache_resource
 def model_drafts(df_train, scores_df=scores_df):
+    """
+    Trains Prophet models on 'Close' and 'winsorized' columns, evaluates their performance, and updates the scores DataFrame.
+
+    Parameters:
+    df_train (pd.DataFrame): DataFrame containing the training data with 'ds' (date) and 'Close'/'winsorized' columns.
+    scores_df (pd.DataFrame): DataFrame to store the performance metrics of the models.
+
+    Returns:
+    pd.DataFrame: Updated scores DataFrame with performance metrics for 'Close' and 'winsorized' models.
+    """
     for i in ['Close', 'winsorized']:
         m = Prophet()
         df_train_renamed = df_train[['ds', i]].rename(columns={i: 'y'})
@@ -282,6 +313,18 @@ all_params = [dict(zip(param_grid.keys(), v)) for v in itertools.product(*param_
 
 @st.cache_resource
 def tune_and_train_final_model(df_train, all_params, forecast_period, scores_df=scores_df):
+    """
+    Tunes hyperparameters, trains the final Prophet model, evaluates its performance, and generates a forecast.
+
+    Parameters:
+    df_train (pd.DataFrame): DataFrame containing the training data with 'ds' (date) and target columns.
+    all_params (list): List of dictionaries containing hyperparameter combinations to be tested.
+    forecast_period (int): Number of periods to forecast into the future.
+    scores_df (pd.DataFrame): DataFrame to store the performance metrics of the models.
+
+    Returns:
+    tuple: A tuple containing the trained model, updated scores DataFrame, forecast DataFrame, and best hyperparameters dictionary.
+    """
     rmses = []
     for params in all_params:
         m = Prophet(**params).fit(df_train)
@@ -325,6 +368,15 @@ scores_df = scores_df.reindex(sorted(scores_df.columns), axis=1)
 # ------------------------------------------------------------------
 @st.cache_resource
 def plot_forecast(data):
+    """
+    Generates a Plotly figure for the forecasted candlestick graph.
+
+    Parameters:
+    data (pd.DataFrame): DataFrame containing the forecast data and indicators.
+
+    Returns:
+    go.Figure: Plotly figure object with the forecasted candlestick graph.
+    """
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=data['Date'], 
                          y=data['yhat_lower'], 
