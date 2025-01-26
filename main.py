@@ -23,7 +23,7 @@ with st.expander('-- Welcome! Click here to expand --'):
 
     It uses a fancy AI model (called Prophet) to predict short-term price swings in stocks. I've tweaked the model to be super accurate, especially for those wild swings.
 
-    The app also gives me helpful charts and indicators (like Bollinger Bands) to spot good entry and exit points. Basically, it gives me an edge in the stock market!
+    The app also visualizes helpful charts and indicators (like Bollinger Bands) to spot good entry and exit points. Basically, it is an edge in the stock market!
 
     For more technical information, check out the Appendix below. Happy trading!
     """)
@@ -480,7 +480,7 @@ Key Model Enhancements:
 * Adaptive Winsorization: The winsorization thresholds are dynamically adjusted based on the stock's volatility. 
 * Adaptive Training Data: The training data size is dynamically adjusted based on the stock's volatility and available data.
 
-By combining these refinements with a cross-validated grid search to optimize changepoint_prior_scale and seasonality_prior_scale (e.g., for '{selected_stock}', optimal values are: changepoint_prior_scale: {best_params_dict["changepoint_prior_scale"]:.3f}, seasonality_prior_scale: {best_params_dict["seasonality_prior_scale"]:.3f}), this application provides me with a robust forecasting tool.
+By combining these refinements with a cross-validated grid search to optimize changepoint_prior_scale and seasonality_prior_scale (e.g., for '{selected_stock}', optimal values are: changepoint_prior_scale: {best_params_dict["changepoint_prior_scale"]:.3f}, seasonality_prior_scale: {best_params_dict["seasonality_prior_scale"]:.3f}), this application provides a robust forecasting tool.
 
 Cross-validation ensures that the hyperparameters selected are not overfitted to a specific subset of the data. By evaluating the model's performance on multiple subsets of the data during the grid search, we can select hyperparameters that generalize better to unseen data and potentially improve the model's out-of-sample performance. Check out Model Iterations in the Appendix to observe the model's improvement over its learning cycles.
 
@@ -488,7 +488,7 @@ Cross-validation ensures that the hyperparameters selected are not overfitted to
 
 Swing trading focuses on capturing short-term price movements. By combining the forecasting model with visual aids like candlestick charts, Bollinger Bands, and SMAs, I'm able to identify potential entry and exit points with greater confidence, ultimately refining my trading decisions.
 
-By selecting a stock ticker, the app displays key performance indicators (KPIs) like historical highs/lows, percentage change, volatility, and current price alongside the chart. This comprehensive tool empowers me to make more informed trading decisions and refine my trading strategies.
+By selecting a stock ticker, the app displays key performance indicators (KPIs) like historical highs/lows, percentage change, volatility, and current price alongside the chart. This comprehensive tool empowers more informed trading decisions and refined trading strategies.
 """
 
 st.subheader('-- About --')
