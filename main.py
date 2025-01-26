@@ -34,18 +34,18 @@ selected_stock = st.text_input("Enter Symbol (Ticker List in Appendix)", value="
 
 # Get Ticker Metadata
 # ------------------------------------------------------------------
-YOUR_API_TOKEN = "675c95da1bcad9.78017425" 
-EXCHANGE_CODE = "US" 
+FINNHUB_API_KEY = 'cuaq7shr01qof06j5bfgcuaq7shr01qof06j5bg0'
+EXCHANGE_CODE = 'US' 
 
-url = f'https://eodhd.com/api/exchange-symbol-list/{EXCHANGE_CODE}?api_token={YOUR_API_TOKEN}&fmt=json'
+url = f'https://finnhub.io/api/v1/stock/symbol?exchange={EXCHANGE_CODE}&token={FINNHUB_API_KEY}'
 
 try:
     response = requests.get(url)
     response.raise_for_status()  # Raise an exception for bad status codes
     tickers_data = response.json()
 
-    # Extract ticker symbols from the response (structure might vary)
-    tickers = [item['Code'] for item in tickers_data] 
+    # Extract ticker symbols from the response
+    tickers = [item['symbol'] for item in tickers_data] 
 
     # print(tickers)
 
@@ -56,8 +56,8 @@ except requests.exceptions.RequestException as e:
 # Extract ticker name using symbol
 # ------------------------------------------------------------------
 for item in tickers_data:
-    if item['Code'] == selected_stock:
-        ticker_name = item['Name']
+    if item['symbol'] == selected_stock:
+        ticker_name = item['description']
     
 # Get ticker raw data
 @st.cache_data # caches data from different tickers
@@ -100,8 +100,8 @@ data.Date = data.Date.astype('datetime64[ns]')
 # ------------------------------------------------------------------
 stats = {}
 for item in tickers_data:
-    if item['Code'] == selected_stock:
-        stats['Symbol'] = item['Code']
+    if item['symbol'] == selected_stock:
+        stats['Symbol'] = item['symbol']
         # stats['Name'] = item['Name']
         stats['Current Price'] = round(data.Close.iloc[-1], 2)
         stats['Current Volume'] = data.Volume.iloc[-1]
