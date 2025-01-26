@@ -446,7 +446,7 @@ def plot_forecast(data):
 plot_forecast(forecast_candlestick_df)
 
 st.write('**-- Accuracy Metrics --**')
-st.write('Forecasting Model Accuracy:')
+st.write('Model Accuracy Score:')
 st.subheader(f'{100-(round(scores_df['mape'].iloc[2]*100, 2))}%')
 st.write('')
 st.dataframe(scores_df.loc[['Final Model']], width=500)
