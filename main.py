@@ -22,7 +22,7 @@ with st.expander('-- Welcome! Click here to expand --'):
 
     **by Shane Peterson**
 
-    This application demonstrates the application of the Prophet forecasting model for predicting short-term price movements in stocks. This project focuses on showcasing the following data science skills:
+    This tool demonstrates the application of the Prophet forecasting model for predicting short-term price movements in stocks. This project focuses on showcasing the following data science skills:
 
     * **Time Series Forecasting:** Utilizing the Prophet model to predict stock prices.
     * **Hyperparameter Tuning:** Optimizing model performance through hyperparameter tuning.
