@@ -13,139 +13,147 @@ import ta
 from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
 import itertools
 
-
 # Main Title
 st.title('Forecasting Tool for Swing Trading')
-st.subheader('by Shane Peterson')
+
 with st.expander('-- Welcome! Click here to expand --'):
     st.write("""
-    Welcome to the Forecasting Tool for Swing Trading! This application is designed to help you make smarter trading decisions!
+    -- Welcome to the Prophet Forecasting App: A Data Science Exploration --
 
-    It uses a fancy AI model (called Prophet) to predict short-term price swings in stocks. I've tweaked the model to be super accurate, especially for those wild swings.
+    **by Shane Peterson**
 
-    The app also visualizes helpful charts and indicators (like Bollinger Bands) to spot good entry and exit points. Basically, it is an edge in the stock market!
+    This application demonstrates the application of the Prophet forecasting model for predicting short-term price movements in stocks. This project focuses on showcasing the following data science skills:
 
-    For more technical information, check out the Appendix below. Happy trading!
+    * **Time Series Forecasting:** Utilizing the Prophet model to predict stock prices.
+    * **Hyperparameter Tuning:** Optimizing model performance through hyperparameter tuning.
+    * **Model Evaluation:** Assessing model performance using appropriate metrics (e.g., MAPE, RMSE).
+
+    The app includes visualizations such as candlestick charts, moving averages, and Bollinger Bands to provide context for the forecast.
+
+    **Disclaimer: This app is for educational and demonstrative purposes only. It is not a financial recommendation and should not be used for actual trading decisions.**
+
+    For more technical details please refer to the About section and the Appendix.
     """)
 
 ### Ticker Selection Searchbar
 st.subheader('-- Choose a Stock --')
-selected_stock = st.text_input("Enter Symbol (Ticker List in Appendix)", value="goog").upper()
+with st.expander('-- Click here to expand --'):
+    selected_stock = st.text_input("Enter Symbol (Ticker List in Appendix)", value="goog").upper()
 
-# Get Ticker Metadata
-# ------------------------------------------------------------------
-FINNHUB_API_KEY = 'cuaq7shr01qof06j5bfgcuaq7shr01qof06j5bg0'
-EXCHANGE_CODE = 'US' 
+    # Get Ticker Metadata
+    # ------------------------------------------------------------------
+    FINNHUB_API_KEY = 'cuaq7shr01qof06j5bfgcuaq7shr01qof06j5bg0'
+    EXCHANGE_CODE = 'US' 
 
-url = f'https://finnhub.io/api/v1/stock/symbol?exchange={EXCHANGE_CODE}&token={FINNHUB_API_KEY}'
+    url = f'https://finnhub.io/api/v1/stock/symbol?exchange={EXCHANGE_CODE}&token={FINNHUB_API_KEY}'
 
-try:
-    response = requests.get(url)
-    response.raise_for_status()  # Raise an exception for bad status codes
-    tickers_data = response.json()
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        tickers_data = response.json()
 
-    # Extract ticker symbols from the response
-    tickers = [item['symbol'] for item in tickers_data] 
+        # Extract ticker symbols from the response
+        tickers = [item['symbol'] for item in tickers_data] 
 
-    # print(tickers)
+        # print(tickers)
 
-except requests.exceptions.RequestException as e:
-    data_load_state = st.text(f"-- Error fetching data: {e} --")
+    except requests.exceptions.RequestException as e:
+        data_load_state = st.text(f"-- Error fetching data: {e} --")
 
-# ------------------------------------------------------------------
-# Extract ticker name using symbol
-# ------------------------------------------------------------------
-for item in tickers_data:
-    if item['symbol'] == selected_stock:
-        ticker_name = item['description']
-    
-# Get ticker raw data
-@st.cache_data # caches data from different tickers
-def load_data(ticker):
-    """
-    Downloads historical market data for a given ticker symbol.
+    # ------------------------------------------------------------------
+    # Extract ticker name using symbol
+    # ------------------------------------------------------------------
+    for item in tickers_data:
+        if item['symbol'] == selected_stock:
+            ticker_name = item['description']
+        
+    # Get ticker raw data
+    @st.cache_data # caches data from different tickers
+    def load_data(ticker):
+        """
+        Downloads historical market data for a given ticker symbol.
 
-    Parameters:
-    ticker (str): The ticker symbol of the stock to download data for.
+        Parameters:
+        ticker (str): The ticker symbol of the stock to download data for.
 
-    Returns:
-    pd.DataFrame: A DataFrame containing the historical market data for the specified ticker.
-    """
-    data = yf.download(ticker, period='max') # returns relevant data in df
-    data.reset_index(inplace=True) # reset multindex, output is index list of tuples
-    cols = list(data.columns) # convert index to list
-    cols[0] = ('Date', '') 
-    cols = [i[0] for i in cols] # return first element of cols tuples
-    data.columns = cols # set as column names
-    data['Date'] = pd.to_datetime(data['Date']).dt.date
-    return data
+        Returns:
+        pd.DataFrame: A DataFrame containing the historical market data for the specified ticker.
+        """
+        data = yf.download(ticker, period='max') # returns relevant data in df
+        data.reset_index(inplace=True) # reset multindex, output is index list of tuples
+        cols = list(data.columns) # convert index to list
+        cols[0] = ('Date', '') 
+        cols = [i[0] for i in cols] # return first element of cols tuples
+        data.columns = cols # set as column names
+        data['Date'] = pd.to_datetime(data['Date']).dt.date
+        return data
 
-# Check input against list of tickers
-data_load_state = st.text("-- Loading Data... --")
-if selected_stock in tickers:
-    data = load_data(selected_stock)
-    data_load_state.text(f"-- {ticker_name} Data Loaded. --")
-else:
-    data_load_state.text(f"-- '{selected_stock}' is not a valid Symbol. Please enter a symbol from the Ticker List in the Appendix below. --")
+    # Check input against list of tickers
+    data_load_state = st.text("-- Loading Data... --")
+    if selected_stock in tickers:
+        data = load_data(selected_stock)
+        data_load_state.text(f"-- {ticker_name} Data Loaded. --")
+    else:
+        data_load_state.text(f"-- '{selected_stock}' is not a valid Symbol. Please enter a symbol from the Ticker List in the Appendix below. --")
 
-# Change Data to datetime64[ns] datatype
-data.Date = pd.to_datetime(data.Date)
-data.Date = data.Date.astype('datetime64[ns]')
+    # Change Data to datetime64[ns] datatype
+    data.Date = pd.to_datetime(data.Date)
+    data.Date = data.Date.astype('datetime64[ns]')
 
-# ------------------------------------------------------------------
-# Feature Engineering
-# ------------------------------------------------------------------
+    # ------------------------------------------------------------------
+    # Feature Engineering
+    # ------------------------------------------------------------------
 
-# Get Ticker Stats
-# ------------------------------------------------------------------
-stats = {}
-for item in tickers_data:
-    if item['symbol'] == selected_stock:
-        stats['Symbol'] = item['symbol']
-        # stats['Name'] = item['Name']
-        stats['Current Price'] = round(data.Close.iloc[-1], 2)
-        stats['Current Volume'] = data.Volume.iloc[-1]
-        data['daily_returns'] = data.Close.pct_change()
-        volatility = data.daily_returns.std() * np.sqrt(252)
-        if volatility < 0.2:
-            category = "Low"
-            percentiles=(0.15, 0.85)
-        elif volatility < 0.4:
-            category = "Medium-Low"
-            percentiles=(0.1, 0.9)
-        elif volatility < 0.6:
-            category = "Medium"
-            percentiles=(0.1, 0.9)
-        elif volatility < 0.8:
-            category = "Medium-High"
-            percentiles=(0.05, 0.95)
-        else:
-            category = "High"
-            percentiles=(0.05, 0.95)
-        stats['Annualized Volatility'] = category
-        stats['Percentage Change'] = str(round(data['daily_returns'].mean() * 100, 4)) + ' %'
-        stats['IPO'] = min(data.Date)
-        stats['Historical Low'] = round(min(data.Low), 2)
-        stats['HL Date'] = data.Date[data.Low.idxmin()]
-        stats['Historical High'] = round(max(data.High), 2)
-        stats['HH Date'] = data.Date[data.High.idxmax()]
-stats_window_df = pd.DataFrame(stats, index=[0])
+    # Get Ticker Stats
+    # ------------------------------------------------------------------
+    stats = {}
+    for item in tickers_data:
+        if item['symbol'] == selected_stock:
+            stats['Symbol'] = item['symbol']
+            # stats['Name'] = item['Name']
+            stats['Current Price'] = round(data.Close.iloc[-1], 2)
+            stats['Current Volume'] = data.Volume.iloc[-1]
+            data['daily_returns'] = data.Close.pct_change()
+            volatility = data.daily_returns.std() * np.sqrt(252)
+            if volatility < 0.2:
+                category = "Low"
+                percentiles=(0.15, 0.85)
+            elif volatility < 0.4:
+                category = "Medium-Low"
+                percentiles=(0.1, 0.9)
+            elif volatility < 0.6:
+                category = "Medium"
+                percentiles=(0.1, 0.9)
+            elif volatility < 0.8:
+                category = "Medium-High"
+                percentiles=(0.05, 0.95)
+            else:
+                category = "High"
+                percentiles=(0.05, 0.95)
+            stats['Annualized Volatility'] = category
+            stats['Percentage Change'] = str(round(data['daily_returns'].mean() * 100, 4)) + ' %'
+            stats['IPO'] = min(data.Date)
+            stats['Historical Low'] = round(min(data.Low), 2)
+            stats['HL Date'] = data.Date[data.Low.idxmin()]
+            stats['Historical High'] = round(max(data.High), 2)
+            stats['HH Date'] = data.Date[data.High.idxmax()]
+    stats_window_df = pd.DataFrame(stats, index=[0])
 
-# Get Stock Age & Set training & forecast periods
-# ------------------------------------------------------------------
-if len(data)/365 < 8:
-    period_unit = int(len(data)/4)
-    forecast_period = period_unit
-    train_period = len(data)
-    stock_age = 'young'
-else:
-    period_unit = 365
-    forecast_period = period_unit
-    train_period = forecast_period * 4 if volatility < 0.6 else forecast_period * 8
-    stock_age = 'seasoned'
+    # Get Stock Age & Set training & forecast periods
+    # ------------------------------------------------------------------
+    if len(data)/365 < 8:
+        period_unit = int(len(data)/4)
+        forecast_period = period_unit
+        train_period = len(data)
+        stock_age = 'young'
+    else:
+        period_unit = 365
+        forecast_period = period_unit
+        train_period = forecast_period * 4 if volatility < 0.6 else forecast_period * 8
+        stock_age = 'seasoned'
 
-# Get stats window
-st.write(stats_window_df)
+    # Get stats window
+    st.write(stats_window_df)
 
 # ------------------------------------------------------------------
 # Process Indicators
@@ -154,72 +162,6 @@ data['SMA50'] = data['Close'].rolling(window=50).mean()
 indicator_bb = ta.volatility.BollingerBands(close=data['Close'], window=20, window_dev=2)
 data['bb_upper'] = indicator_bb.bollinger_hband()
 data['bb_lower'] = indicator_bb.bollinger_lband()
-
-# ------------------------------------------------------------------
-# Function & indicators for raw data candlestick graph
-# ------------------------------------------------------------------
-@st.cache_resource
-def plot_raw_data(data):
-    """
-    Generates a Plotly figure for the raw candlestick data along with SMA and Bollinger Bands.
-
-    Parameters:
-    data (pd.DataFrame): DataFrame containing the raw market data and indicators.
-    ticker_name (str): The name of the ticker symbol.
-    selected_stock (str): The name of the selected stock.
-    stock_age (str): The age category of the stock ('seasoned' or other).
-
-    Returns:
-    None: The function displays the Plotly figure in the Streamlit app.
-    """
-    fig = go.Figure()
-    # Add candlestick trace
-    fig.add_trace(go.Candlestick(x=data['Date'],
-                open=data['Open'],
-                high=data['High'],
-                low=data['Low'],
-                close=data['Close'],
-                name='Candlestick'))
-    # Add SMA trace
-    fig.add_trace(go.Scatter(x=data['Date'], 
-                            y=data['SMA50'], 
-                            name='SMA50', 
-                            line=dict(color='black', width=2, dash='dash'),
-                            visible='legendonly'))
-    # Add upper Bollinger Band
-    fig.add_trace(go.Scatter(x=data['Date'], 
-                             y=data['bb_upper'], 
-                             line=dict(color='red', width=1), 
-                             name='Upper BB',
-                             visible='legendonly'))
-    # Add lower Bollinger Band
-    fig.add_trace(go.Scatter(x=data['Date'], 
-                             y=data['bb_lower'], 
-                             line=dict(color='green', width=1), 
-                             name='Lower BB',
-                             visible='legendonly'))
-    # Labels
-    fig.layout.update(title_text=f"Time Series Data: {ticker_name} '{selected_stock}'",
-                xaxis_rangeslider_visible=True,
-                yaxis_title='Price',
-                xaxis_title='Date')
-    # Calculate default date range
-    if stock_age == 'seasoned':
-        end_date = data['Date'].max()
-        start_date = end_date - pd.Timedelta(days=365)
-        fig.update_xaxes(range=[start_date, end_date])
-
-    st.plotly_chart(fig)
-# Plot raw data
-plot_raw_data(data)
-
-# Graph notes
-# ------------------------------------------------------------------
-st.subheader('-- Chart Tips --')
-with st.expander('Click here to expand'):
-    st.write('* Use the slider (above) to select a date range')
-    st.write('* Click items in the legend to show/hide indicators')
-    st.write('* Hover in the upper-right corner of graph to reveal controls. Go fullscreen and explore!')
 
 # ------------------------------------------------------------------
 # FORECASTING
@@ -293,10 +235,10 @@ def model_drafts(df_train, scores_df=scores_df):
         scores_df = pd.concat([scores_df, df_p[['mse', 'rmse', 'mae', 'mape']]], ignore_index=True)
     return scores_df
 
-data_load_state = st.text("-- Training Baseline & Winsorized Model... --")
+data_load_state = st.text("-- Please wait while the Baseline & Winsorized models train... --")
 if len(df_train) > 0:
     scores_df = model_drafts(df_train)
-    data_load_state.text("-- Baseline & Winsorized Model Trained. --")
+    data_load_state.text("-- Baseline & Winsorized models Trained. --")
 else:
     data_load_state.text("-- Error in training models. --")
 
@@ -352,7 +294,7 @@ def tune_and_train_final_model(df_train, all_params, forecast_period, scores_df=
     
     return m, scores_df, forecast, best_params_dict
 
-data_load_state = st.text("-- Training Final Model... --")
+data_load_state = st.text("-- Please wait while the Final Model trains... --")
 if len(df_train) > 0:
     m, scores_df, forecast, best_params_dict = tune_and_train_final_model(df_train, all_params, forecast_period)
     data_load_state.text("-- Final Model Trained. --")
@@ -445,16 +387,27 @@ def plot_forecast(data):
 
 plot_forecast(forecast_candlestick_df)
 
-st.write('**-- Accuracy Metrics --**')
+
+# Chart Tips
+# ------------------------------------------------------------------
+st.subheader('-- Chart Tips --')
+with st.expander('Click here to expand'):
+    st.write('* Use the slider (above) to select a date range')
+    st.write('* Click items in the legend to show/hide indicators')
+    st.write('* Hover in the upper-right corner of graph to reveal controls. Go fullscreen and explore!')
+
+# Accuracy Metrics
+# ------------------------------------------------------------------
+st.subheader('**-- Accuracy Metrics --**')
 st.write('Model Accuracy Score:')
 st.subheader(f'{100-(round(scores_df['mape'].iloc[2]*100, 2))}%')
-st.write('')
-st.dataframe(scores_df.loc[['Final Model']], width=500)
 
-# Graph notes
+
+# Metrics notes
 # ------------------------------------------------------------------
-st.write('-- Tips for Accuracy Metrics --')
+st.write('-- More Metrics --')
 with st.expander('Click here to expand'):
+    st.dataframe(scores_df.loc[['Final Model']], width=500)
     st.write("In the context of time series forecasting, 'error' refers to the difference between the actual value of a variable at a specific point in time and the value predicted by a forecasting model. In this case, the metrics will specifically measure the error between the stock's closing price and the forecast trained on the closing price.")
     st.write(f"* Mean Absolute Error (MAE) - a MAE of {round(scores_df['mae'].iloc[2], 4)} implies that, on average, the model's predictions are off by approximately ${round(scores_df['mae'].iloc[2], 2)}.")
     st.write(f"* Mean Absolute Percentage Error (MAPE) - a MAPE of {round(scores_df['mape'].iloc[2], 4)} means that, on average, the model's predictions are {round(scores_df['mape'].iloc[2] * 100, 2)}% off from the actual values.")
@@ -466,7 +419,7 @@ with st.expander('Click here to expand'):
 # ------------------------------------------------------------------
 
 about_str = f"""
-**-- The App --**
+**-- The Tool --**
 
 As a passionate swing trader, I developed this application to streamline my decision-making process. It leverages fundamental data science concepts, including data engineering and analytics, to provide actionable insights. 
 
