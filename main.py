@@ -445,7 +445,8 @@ By selecting a stock ticker, the app displays key performance indicators (KPIs) 
 """
 
 st.subheader('-- About --')
-st.write(about_str)
+with st.expander('Click here to expand'):
+    st.write(about_str)
 
 # ------------------------------------------------------------------
 ### APPENDIX
