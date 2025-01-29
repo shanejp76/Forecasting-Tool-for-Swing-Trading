@@ -407,6 +407,13 @@ st.subheader(f'{100-(round(scores_df['mape'].iloc[2]*100, 2))}%')
 # ------------------------------------------------------------------
 st.write('-- More Metrics --')
 with st.expander('Click here to expand'):
+    st.subheader('-- Model Iterations --')
+    st.write("The tables below display the performance metrics for each model iteration. The 'Baseline Model' uses the raw closing prices, while the 'Winsorized Model' applies dynamic winsorization to the closing prices. The 'Final Model' is the best-performing model after hyperparameter tuning.")
+    st.write('-- Baseline Model --')
+    st.dataframe(scores_df.loc[['Baseline Model']], width=500)
+    st.write('-- Winsorized Model --')
+    st.dataframe(scores_df.loc[['Winsorized Model']], width=500)
+    st.write('-- Final Model --')
     st.dataframe(scores_df.loc[['Final Model']], width=500)
     st.write("In the context of time series forecasting, 'error' refers to the difference between the actual value of a variable at a specific point in time and the value predicted by a forecasting model. In this case, the metrics will specifically measure the error between the stock's closing price and the forecast trained on the closing price.")
     st.write(f"* Mean Absolute Error (MAE) - a MAE of {round(scores_df['mae'].iloc[2], 4)} implies that, on average, the model's predictions are off by approximately ${round(scores_df['mae'].iloc[2], 2)}.")
@@ -456,13 +463,6 @@ st.subheader('-- Appendix --') # button to hide / unhide
 with st.expander('Click here to expand'):
     st.subheader('-- Ticker List --') # button to hide / unhide
     st.write(pd.DataFrame(tickers_data))
-    st.subheader('-- Model Iterations --')
-    st.write('-- Baseline Model --')
-    st.dataframe(scores_df.loc[['Baseline Model']], width=500)
-    st.write('-- Winsorized Model --')
-    st.dataframe(scores_df.loc[['Winsorized Model']], width=500)
-    st.write('-- Final Model --')
-    st.dataframe(scores_df.loc[['Final Model']], width=500)
     st.subheader('-- Forecast Components --')
     fig2 = m.plot_components(forecast)
     st.write(fig2)
