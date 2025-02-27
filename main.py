@@ -26,7 +26,7 @@ with st.expander('-- Welcome! Click here to expand --'):
 
     * **Time Series Forecasting:** Utilizing the Prophet model to predict stock prices.
     * **Hyperparameter Tuning:** Optimizing model performance through hyperparameter tuning. (see About section below)
-    * **Model Evaluation:** Assessing model performance using appropriate metrics (e.g., MAPE, RMSE). (see Accuracy Metrics section below)
+    * **Model Evaluation:** Assessing model performance using appropriate metrics (e.g., SMAPE, RMSE). (see Accuracy Metrics section below)
 
     The app includes visualizations such as candlestick charts, moving averages, and Bollinger Bands to provide context for the forecast.
 
@@ -212,7 +212,7 @@ cv_func = lambda model_name: cross_validation(model_name,
 # Get metrics for baseline & winsorized models
 # ------------------------------------------------------------------
 
-scores_df = pd.DataFrame(columns=['mse', 'rmse', 'mae', 'mape'])
+scores_df = pd.DataFrame(columns=['mse', 'rmse', 'mae', 'smape'])
 
 @st.cache_resource
 def model_drafts(df_train, scores_df=scores_df):
@@ -232,7 +232,7 @@ def model_drafts(df_train, scores_df=scores_df):
         m.fit(df_train_renamed)
         df_cv = cv_func(m)
         df_p = performance_metrics(df_cv, rolling_window=1)
-        scores_df = pd.concat([scores_df, df_p[['mse', 'rmse', 'mae', 'mape']]], ignore_index=True)
+        scores_df = pd.concat([scores_df, df_p[['mse', 'rmse', 'mae', 'smape']]], ignore_index=True)
     return scores_df
 
 data_load_state = st.text("-- Please wait while the Baseline & Winsorized models train... --")
@@ -288,7 +288,7 @@ def tune_and_train_final_model(df_train, all_params, forecast_period, scores_df=
     m.fit(df_train)
     df_cv = cv_func(m)
     df_p = performance_metrics(df_cv, rolling_window=1)
-    scores_df = pd.concat([scores_df, df_p[['mse', 'rmse', 'mae', 'mape']]], ignore_index=True)
+    scores_df = pd.concat([scores_df, df_p[['mse', 'rmse', 'mae', 'smape']]], ignore_index=True)
     future = m.make_future_dataframe(periods=forecast_period)
     forecast = m.predict(future)
     
@@ -400,7 +400,7 @@ with st.expander('Click here to expand'):
 # ------------------------------------------------------------------
 st.subheader('**-- Accuracy Metrics --**')
 st.write('Model Accuracy Score:')
-st.subheader(f'{100-(round(scores_df['mape'].iloc[2]*100, 2))}%')
+st.subheader(f'{100-(round(scores_df['smape'].iloc[2]*100, 2))}%')
 
 
 # Metrics notes
@@ -417,7 +417,7 @@ with st.expander('Click here to expand'):
     st.dataframe(scores_df.loc[['Final Model']], width=500)
     st.write("In the context of time series forecasting, 'error' refers to the difference between the actual value of a variable at a specific point in time and the value predicted by a forecasting model. In this case, the metrics will specifically measure the error between the stock's closing price and the forecast trained on the closing price.")
     st.write(f"* Mean Absolute Error (MAE) - a MAE of {round(scores_df['mae'].iloc[2], 4)} implies that, on average, the model's predictions are off by approximately ${round(scores_df['mae'].iloc[2], 2)}.")
-    st.write(f"* Mean Absolute Percentage Error (MAPE) - a MAPE of {round(scores_df['mape'].iloc[2], 4)} means that, on average, the model's predictions are {round(scores_df['mape'].iloc[2] * 100, 2)}% off from the actual values.")
+    st.write(f"* Symmetric Mean Absolute Percentage Error (smape) - a smape of {round(scores_df['smape'].iloc[2], 4)} means that, on average, the model's predictions are {round(scores_df['smape'].iloc[2] * 100, 2)}% off from the actual values.")
     st.write('* Mean Squared Error (MSE) - this squares the errors, giving more weight to larger errors. A lower MSE indicates better accuracy.')
     st.write(f"* Root Mean Squared Error (RMSE) -  The square root of MSE. It is in the same units as the original data, making it easier to interpret. The RMSE of {round(scores_df['rmse'].iloc[2], 4)} suggests that the model's predictions can deviate from the actual values by up to ${round(scores_df['rmse'].iloc[2], 2)} in some cases.")
 
