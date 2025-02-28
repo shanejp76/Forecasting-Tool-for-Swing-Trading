@@ -36,36 +36,11 @@ This application is designed to enhance swing trading strategies by providing va
 
 2. Follow the instructions on the Streamlit interface to interact with the application.
 
-## Appendix
-
-### Ticker List
-
-Displays the list of tickers used in the analysis.
-
-### Raw Data
-
-Shows the raw data used for forecasting.
-
-### Forecast Grid
-
-Displays the forecasted data.
-
-### Forecast Components
-
-Shows the components of the forecast.
-
-### Model Iterations
-
-Displays the accuracy metrics for different models:
-- Baseline Model
-- Winsorized Model
-- Final Model
-
 ### About
 
 #### Swing Trading
 
-This application was designed to enhance my swing trading strategy. Swing trading focuses on capturing short-term price movements, and this tool provides me with valuable insights.
+This application was designed to enhance my swing trading strategy. Swing trading focuses on capturing short-term price movements, and this tool provides accurate forecasting data.
 
 I've integrated a Prophet forecasting model, fine-tuned with techniques like winsorization and hyperparameter tuning to optimize its accuracy. The model dynamically adjusts its training data based on the stock's volatility, aiming to improve prediction accuracy.
 
