@@ -1,30 +1,33 @@
 # Forecasting Tool for Swing Trading
 
-This application is designed to enhance swing trading strategies by providing valuable insights through various analytical tools and visual aids.
+This application is designed to enhance swing trading strategies by providing valuable insights through accurate stock price forecasts and various analytical tools.
 
 ## Features
 
-- **Prophet Forecasting Model**: Integrated with techniques like winsorization and hyperparameter tuning to optimize accuracy.
+- **Custom-Tuned Prophet Forecasting Model**: Achieves a median SMAPE of 15% across 150 diverse stock tickers, demonstrating robust predictive capability.
+- **Volatility-Adjusted Winsorization**: Effectively mitigates the impact of outliers, contributing to the model's overall robustness, especially in high-volatility scenarios.
 - **Dynamic Training Data**: Adjusts based on stock volatility to improve prediction accuracy.
-- **Visual Aids**: Includes candlestick charts, Bollinger Bands, and SMAs to help identify potential entry and exit points.
+- **Visual Aids**: Includes candlestick charts, Bollinger Bands, and Simple Moving Averages (SMAs) to help identify potential entry and exit points.
+- **Statistical Significance**: Validated through a Wilcoxon signed-rank test (p < 0.05) and a large effect size (Cliff's Delta = 0.69) compared to the standard Prophet model.
 
 ## Installation
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/yourusername/swing-ticker.git
-    cd swing-ticker
+   ```bash
+   git clone [https://github.com/shanejp76/Forecasting-Tool-for-Swing-Trading.git](https://www.google.com/search?q=https://github.com/shanejp76/Forecasting-Tool-for-Swing-Trading.git)
+   cd Forecasting-Tool-for-Swing-Trading
     ```
 
 2. Create a virtual environment and activate it:
     ```bash
     python3 -m venv venv
-    source venv/bin/activate
+    source venv/bin/activate  # On macOS/Linux
+    venv\Scripts\activate      # On Windows
     ```
 
 3. Install the required packages:
     ```bash
-    pip install -r requirements.txt
+pip install -r requirements.txt
     ```
 
 ## Usage
@@ -35,6 +38,9 @@ This application is designed to enhance swing trading strategies by providing va
     ```
 
 2. Follow the instructions on the Streamlit interface to interact with the application.
+
+Documentation
+For detailed information about the model, methodology, and performance, please refer to the [Forecasting Tool Documentation](https://github.com/shanejp76/Forecasting-Tool-for-Swing-Trading/blob/docs/Forecasting%20Tool%20Documentation.pdf).
 
 ### About
 
