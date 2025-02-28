@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 2. Follow the instructions on the Streamlit interface to interact with the application.
 
-Documentation
+### Documentation
 For detailed information about the model, methodology, and performance, please refer to the [Forecasting Tool Documentation](https://github.com/shanejp76/Forecasting-Tool-for-Swing-Trading/blob/docs/Forecasting%20Tool%20Documentation.pdf).
 
 ### About
