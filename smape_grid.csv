@@ -1,6 +1,0 @@
-volatility,smape_naive,smape_standard,smape_tuned
-Low,2.325,0.068,0.047
-Medium-Low,9.655,0.206,0.130
-Medium,10.642,0.368,0.215
-Medium-High,12178.034,0.552,0.431
-High,114156.350,1.320,1.064
