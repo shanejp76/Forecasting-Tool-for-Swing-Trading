@@ -27,7 +27,7 @@ This application is designed to enhance swing trading strategies by providing va
 
 3. Install the required packages:
     ```bash
-pip install -r requirements.txt
+   pip install -r requirements.txt
     ```
 
 ## Usage
