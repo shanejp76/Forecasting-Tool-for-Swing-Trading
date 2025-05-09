@@ -28,7 +28,8 @@ ga_tracking_code = """
 """
 
 # Embed the tracking code into your app
-components.html(ga_tracking_code, height=0) # height=0 makes it invisible
+# components.html(ga_tracking_code, height=0)
+st.markdown(ga_tracking_code, unsafe_allow_html=True)
 
 # Main Title
 st.title('Forecasting Tool for Swing Trading')
