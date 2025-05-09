@@ -13,6 +13,17 @@ import ta
 from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
 import itertools
 
+# Google Analtyics Tag
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MS3RRGJ444"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MS3RRGJ444');
+</script>
+
 # Main Title
 st.title('Forecasting Tool for Swing Trading')
 
