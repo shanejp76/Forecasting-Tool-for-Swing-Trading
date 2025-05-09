@@ -30,7 +30,9 @@ with st.expander('-- Welcome! Click here to expand --'):
 
     The app includes visualizations such as candlestick charts, moving averages, and Bollinger Bands to provide context for the forecast.
 
-    **Disclaimer: This app is for educational and demonstrative purposes only. It is not a financial recommendation and should not be used for actual trading decisions.**
+    **Disclaimer: This app is for educational and demonstrative purposes only. It is not a financial recommendation and should not be used for actual trading decisions.
+    
+    The API used in this app limits the requests per month to 20. If the app receives more than 20, the app will stop working!**
 
     For more technical details please refer to the About section and the Appendix.
     """)
