@@ -13,6 +13,22 @@ import ta
 from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
 import itertools
 
+# Google Analytics tag
+ga_tracking_code = """
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MS3RRGJ444"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MS3RRGJ444');
+</script>
+"""
+
+# Embed the tracking code into your app
+components.html(ga_tracking_code, height=0) # height=0 makes it invisible
+
 # Main Title
 st.title('Forecasting Tool for Swing Trading')
 
