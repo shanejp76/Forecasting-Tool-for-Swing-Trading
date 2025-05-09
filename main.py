@@ -1,5 +1,6 @@
 import requests
 import streamlit as st
+import streamlit.components.v1 as components
 from datetime import date
 import yfinance as yf
 from prophet import Prophet
