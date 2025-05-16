@@ -59,7 +59,9 @@ st.subheader('-- Choose a Stock --')
 with st.expander('-- Click here to expand --'):
     # selected_stock = st.text_input("Enter Symbol (Ticker List in Appendix)", value="goog").upper()
     selected_stock = 'GOOG'
-    st.write('The stock selector is currently locked due to overuse. To select a ticker or demo the app, please contact me directly through my website or LinkedIn and I'll provide you with setup instructions.')
+    st.write("""
+    The stock selector is currently locked due to overuse. To select a ticker or demo the app, please contact me directly through my website or LinkedIn and I'll provide you with setup instructions.
+    """)
 
     # Get Ticker Metadata
     # ------------------------------------------------------------------
