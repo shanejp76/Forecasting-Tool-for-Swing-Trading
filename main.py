@@ -49,9 +49,7 @@ with st.expander('-- Welcome! Click here to expand --'):
 
     The app includes visualizations such as candlestick charts, moving averages, and Bollinger Bands to provide context for the forecast.
 
-    **Disclaimer: This app is for educational and demonstrative purposes only. It is not a financial recommendation and should not be used for actual trading decisions.
-    
-    The API used in this app limits the requests per month to 20. If the app receives more than 20, the app will stop working!**
+    **Disclaimer: This app is for educational and demonstrative purposes only. It is not a financial recommendation and should not be used for actual trading decisions. **
 
     For more technical details please refer to the About section and the Appendix.
     """)
@@ -59,7 +57,9 @@ with st.expander('-- Welcome! Click here to expand --'):
 ### Ticker Selection Searchbar
 st.subheader('-- Choose a Stock --')
 with st.expander('-- Click here to expand --'):
-    selected_stock = st.text_input("Enter Symbol (Ticker List in Appendix)", value="goog").upper()
+    # selected_stock = st.text_input("Enter Symbol (Ticker List in Appendix)", value="goog").upper()
+    selected_stock = 'GOOG'
+    st.write('The stock selector is currently locked due to overuse. To select a ticker or demo the app, please contact me directly through my website or LinkedIn and I'll provide you with setup instructions.')
 
     # Get Ticker Metadata
     # ------------------------------------------------------------------
