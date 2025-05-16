@@ -56,13 +56,13 @@ with st.expander('-- Welcome! Click here to expand --'):
 
 ### Ticker Selection Searchbar
 st.subheader('-- Choose a Stock --')
+selected_stock = 'GOOG'
+st.write("""
+The stock selector is currently locked due to overuse. To select a ticker or demo the app, please contact me directly through my website or LinkedIn and I'll provide you with setup instructions.
+This app will be out of order until the yfinance request limit resets.
+""")
 with st.expander('-- Click here to expand --'):
     # selected_stock = st.text_input("Enter Symbol (Ticker List in Appendix)", value="goog").upper()
-    selected_stock = 'GOOG'
-    st.write("""
-    The stock selector is currently locked due to overuse. To select a ticker or demo the app, please contact me directly through my website or LinkedIn and I'll provide you with setup instructions.
-    This app will be out of order until the yfinance request limit resets.
-    """)
 
     # Get Ticker Metadata
     # ------------------------------------------------------------------
