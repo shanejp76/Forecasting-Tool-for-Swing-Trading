@@ -58,7 +58,7 @@ with st.expander('-- Welcome! Click here to expand --'):
 st.subheader('-- Choose a Stock --')
 selected_stock = 'GOOG'
 st.write("""
-The stock selector is currently locked due to overuse. To select a ticker or demo the app, please contact me directly through my website or LinkedIn and I'll provide you with setup instructions.
+The stock selector is currently locked due to overuse. To select a ticker or demo the app, please contact me directly (shanejp76@gmail.com) and I'll provide you with setup instructions.
 This app will be out of order until the yfinance request limit resets.
 """)
 with st.expander('-- Click here to expand --'):
