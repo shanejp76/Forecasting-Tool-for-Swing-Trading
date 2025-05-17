@@ -116,7 +116,7 @@ with st.expander('-- Click here to expand --'):
     data_load_state = st.text("-- Loading Data... --")
     if selected_stock in tickers:
         data = load_data(selected_stock)
-        if not data:
+        if data.empty():
             data_load_state.text("-- App out of order. Monthly request limit reached. --")
         else:
             data_load_state.text(f"-- {ticker_name} Data Loaded. --")
